@@ -52,6 +52,10 @@ class GaussianIntegralFinalUpdated(Scene):
             MathTex(r"dx\,dy = r \, dr \, d\theta").scale(0.9)
         ).arrange(DOWN, aligned_edge=LEFT).to_corner(UL)
 
+        for part in jacobian_parts:
+            self.play(Transform(part))
+            self.wait(1)
+
         self.play(*[Write(mob) for mob in jacobian_parts])
         self.wait(2)
 
@@ -85,5 +89,9 @@ class GaussianIntegralFinalUpdated(Scene):
         final = MathTex(
             r"\int_{-\infty}^\infty e^{-x^2} dx = \sqrt{\pi}"
         ).scale(1.2)
+        box = SurroundingRectangle(final, color=RED, buff=0.1)
         self.play(Transform(current, final))
+        self.add(final)  # Ensure 'final' is added to the scene
+        self.play(Create(box))
         self.wait(3)
+        
