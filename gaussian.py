@@ -45,22 +45,24 @@ class GaussianIntegralFinalUpdated(Scene):
 
         # Jacobian derivation — move to top-left
         self.wait(0.5)
-        jacobian_parts = VGroup(
-            MathTex(r"x = r\cos\theta,\quad y = r\sin\theta").scale(0.9),
-            MathTex(r"\mathbf{J}(r,\theta) = \begin{bmatrix} \cos\theta & -r\sin\theta \\ \sin\theta & r\cos\theta \end{bmatrix}").scale(0.9),
-            MathTex(r"\Rightarrow |\mathbf{J}(r,\theta)| = r").scale(0.9),
-            MathTex(r"dx\,dy = r \, dr \, d\theta").scale(0.9)
-        ).arrange(DOWN, aligned_edge=LEFT).to_corner(UL)
+    # Jacobian derivation - step by step, top-left corner
+        jacobian_step1 = MathTex(r"x = r\cos\theta,\quad y = r\sin\theta").scale(0.9).to_corner(UL)
+        jacobian_step2 = MathTex(r"\mathbf{J}(r,\theta) = \begin{bmatrix} \cos\theta & -r\sin\theta \\ \sin\theta & r\cos\theta \end{bmatrix}").scale(0.9).next_to(jacobian_step1, DOWN, aligned_edge=LEFT)
+        jacobian_step3 = MathTex(r"\Rightarrow |\mathbf{J}(r,\theta)| = r").scale(0.9).next_to(jacobian_step2, DOWN, aligned_edge=LEFT)
+        jacobian_step4 = MathTex(r"dx\,dy = r \, dr \, d\theta").scale(0.9).next_to(jacobian_step3, DOWN, aligned_edge=LEFT)
 
-        for part in jacobian_parts:
-            self.play(Transform(part))
-            self.wait(1)
+        self.play(Write(jacobian_step1))
+        self.wait(0.8)
+        self.play(Write(jacobian_step2))
+        self.wait(0.8)
+        self.play(Write(jacobian_step3))
+        self.wait(0.8)
+        self.play(Write(jacobian_step4))
+        self.wait(1.5)
 
-        self.play(*[Write(mob) for mob in jacobian_parts])
-        self.wait(2)
+# Fade out Jacobian steps
+        self.play(FadeOut(jacobian_step1, jacobian_step2, jacobian_step3, jacobian_step4))
 
-        # Fade out Jacobian stuff and show substituted integral
-        self.play(FadeOut(jacobian_parts))
 
         polar = MathTex(
             r"= \int_0^{2\pi} \int_0^\infty e^{-r^2} \cdot r \, dr \, d\theta"
@@ -86,12 +88,8 @@ class GaussianIntegralFinalUpdated(Scene):
         self.play(Transform(current, result))
         self.wait(2)
 
-        final = MathTex(
-            r"\int_{-\infty}^\infty e^{-x^2} dx = \sqrt{\pi}"
-        ).scale(1.2)
-        box = SurroundingRectangle(final, color=RED, buff=0.1)
-        self.play(Transform(current, final))
-        self.add(final)  # Ensure 'final' is added to the scene
+        boxed_final = MathTex(r"\int_{-\infty}^\infty e^{-x^2} dx = \sqrt{\pi}").scale(1.2)
+        box = SurroundingRectangle(boxed_final, color=RED, buff=0.3)
+        self.play(Transform(current, boxed_final))
         self.play(Create(box))
         self.wait(3)
-        
